@@ -1,13 +1,13 @@
 # MacroDivide
 
-Responsive batch meal portioning calculator with raw recipe macros, cookware tare weights, container allocation, and printable macro labels.
+Batch meal portioning calculator.
 
-## Local preview
+## Preview locally
 
 Run `python3 -m http.server 8000` and open http://localhost:8000.
 
-Data is saved in your browser on this device. Stripe billing is not configured; the trial indicator is informational.
+Data stays in browser local storage. Trial indicator is informational; Stripe billing is not connected.
 
-## GitHub Pages
+## Hosting
 
-Publish the `main` branch from `/ (root)` in Settings → Pages. No build step is required.
+GitHub Pages: deploy main branch from / (root). No build step.
