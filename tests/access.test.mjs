@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {entitled} from '../supabase/functions/_shared/access.js';
+const now=Date.parse('2026-11-17T00:00:00Z');
+const future='2026-12-01T00:00:00Z',past='2026-11-16T00:00:00Z';
+assert.equal(entitled(null,now),false);
+assert.equal(entitled({status:'trialing',trial_end:future},now),true);
+assert.equal(entitled({status:'trialing',trial_end:past},now),false);
+assert.equal(entitled({status:'active',period_end:future,cancel_at_period_end:true},now),true);
+assert.equal(entitled({status:'active',period_end:past},now),false);
+assert.equal(entitled({status:'active',period_end:future,risk_hold:true},now),false);
+for(const status of ['none','past_due','unpaid','paused','incomplete','incomplete_expired','canceled'])assert.equal(entitled({status,period_end:future,trial_end:future},now),false);
+assert.equal(entitled({status:'active',period_end:'invalid'},now),false);
+console.log('Access gates passed: expiry, trial, cancellation, unpaid state, and risk holds.');
