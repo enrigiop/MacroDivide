@@ -2,16 +2,16 @@ import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.95.0';
 const sb=createClient('https://jgmzkzhgxieswcrekmew.supabase.co','sb_publishable_pjU2i6GsIXFbVX_RHiRZcQ_ALEjlxin');
 const base='https://jgmzkzhgxieswcrekmew.supabase.co/functions/v1/';
 const $=id=>document.getElementById(id),message=s=>{$('message').textContent=s};
-const ready=()=>{$('signin').disabled=false;$('signup').disabled=false};
-let loading=false,recovery=false;
+const ready=()=>{if($('signin'))$('signin').disabled=false;if($('signup'))$('signup').disabled=false};
+let loading=false,recovery=false,workspaceOpened=false;
 async function api(action){const {data:{session}}=await sb.auth.getSession();if(!session)throw Error('Please sign in first.');const {data,error}=await sb.functions.invoke('billing',{body:{action}});if(error)throw Error(data?.error||'Billing is temporarily unavailable. Please try again.');if(data?.error)throw Error(data.error);return data}
 async function load(){
- if(loading||recovery)return;loading=true;
+ if(loading||recovery||workspaceOpened)return;loading=true;
  try{const {data:{session},error:sessionError}=await sb.auth.getSession();if(sessionError)throw sessionError;if(recovery)return;$('auth').style.display=session?'none':'block';$('account').style.display=session?'block':'none';if(!session)return;
  $('identity').textContent=session.user.email;
  const status=await api('status');message('');$('status').textContent=status.access?'Opening your workspace…':status.status==='none'?'Your account is ready. Choose your subscription below.':status.status==='review'?'Your billing account needs review. Please contact support.':'Subscription status: '+status.status;
  $('start').textContent=status.status==='none'&&!status.trialUsed?'Start 14-day free trial':'Subscribe — €5.99/month';
- if(status.access){const r=await fetch(base+'member-app',{headers:{Authorization:'Bearer '+session.access_token,apikey:'sb_publishable_pjU2i6GsIXFbVX_RHiRZcQ_ALEjlxin'}});if(!r.ok)throw Error('Could not verify workspace access. Please refresh.');const html=await r.text();document.open();document.write(html);document.close()}
+ if(status.access){const r=await fetch(base+'member-app',{headers:{Authorization:'Bearer '+session.access_token,apikey:'sb_publishable_pjU2i6GsIXFbVX_RHiRZcQ_ALEjlxin'}});if(!r.ok)throw Error('Could not verify workspace access. Please refresh.');const html=await r.text();workspaceOpened=true;document.open();document.write(html);document.close()}
  }catch(e){message(e.message)}finally{loading=false}
 }
 $('form').onsubmit=async e=>{e.preventDefault();$('signin').disabled=true;try{const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;await load()}catch(e){message(e.message)}finally{ready()}};
