@@ -1,0 +1,6 @@
+[functions.billing]
+verify_jwt = false
+[functions.stripe-webhook]
+verify_jwt = false
+[functions.member-app]
+verify_jwt = false
