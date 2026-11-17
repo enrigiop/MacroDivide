@@ -17,7 +17,7 @@ Restricted Stripe key: Customers Write; Checkout Sessions Write; Customer Portal
 
 ## Flow
 
-The sales page opens app.html. Supabase verifies email/password sign-in and confirmed email ownership. Customer support uses support.macrodivide@proton.me. Brevo SMTP is the planned sender for confirmations and password recovery; its setup and actual deliveries must be verified before launch. The billing function verifies the session with Auth, associates one Stripe Customer with that user, and creates a hosted Checkout session. Trial use is stored server-side. Repeat subscriptions do not get a fresh trial.
+The sales page opens app.html. Supabase verifies email/password sign-in and confirmed email ownership. Customer support uses support.macrodivide@proton.me. Brevo SMTP is configured for confirmations and password recovery. Actual inbox delivery must be verified before launch. The billing function verifies the session with Auth, associates one Stripe Customer with that user, and creates a hosted Checkout session. Trial use is stored server-side. Repeat subscriptions do not get a fresh trial.
 
 The member-app function serves the original calculator only to a verified user with a live active/trialing subscription and no risk hold. The return URL itself never grants access. Refreshing billing status reads current Stripe state and reconciles it with the database, so out-of-order webhook events do not restore stale access.
 
@@ -48,12 +48,12 @@ The webhook verifies Stripe's raw-body signature before database writes, process
 
 Billing, member-app, and stripe-webhook functions are deployed. Both custom Stripe secrets are stored in Supabase. Webhook `we_1Ucbq4RYIvKi4dXudzLr9Zoe` is active with the 12 events below and API version 2026-10-28.endive. Auth Site URL and redirect allow-list are configured. Production HTTP checks returned 401 for unsigned-in billing and app access, and 400 for an unsigned webhook.
 
-The owner chose email/password accounts with Proton for support and Brevo for outbound authentication email. Brevo account creation is awaiting the owner. Sender verification, SMTP configuration, and delivered confirmation/reset email tests remain required. Brevo rewrites unverified/free sender domains to brevosend.com as a temporary deliverability measure; this is not a permanent custom-domain guarantee. Google project utopian-outlook-515002-r3 was created but its OAuth client/provider setup was not completed.
+The owner chose email/password accounts with Proton for support and Brevo for outbound authentication email. Brevo Free is active and support.macrodivide@proton.me is a verified sender named MacroDivide. Supabase SMTP is enabled using smtp-relay.brevo.com:587; the SMTP key is stored only in Supabase encrypted SMTP settings. The key is named MacroDivide Supabase Auth, expires November 17, 2027, and can expire after 90 days of inactivity. An actual Supabase authentication-email request succeeded (HTTP 200), and Brevo logged it as sent. Proton initially deferred it with SMTP 421 4.3.0, then Brevo recorded delivery at 15:33 Europe/Rome on November 17, 2026. Inbox delivery is verified; confirmation-link completion and password recovery remain to be tested. Brevo rewrites unverified/free sender domains to brevosend.com as a temporary deliverability measure; this is not a permanent custom-domain guarantee. Google project utopian-outlook-515002-r3 was created but its OAuth client/provider setup was not completed.
 
 ## Before launch
 
 - Configure Auth Site URL and allowed redirects to `https://enrigiop.github.io/MacroDivide/app.html`.
-- Verify support.macrodivide@proton.me as a Brevo sender, confirm transactional email is enabled, and store its SMTP credentials only in Supabase Auth SMTP settings. Check sender rewriting and delivery in real inboxes. Stay on the Free plan and do not enable paid upgrades.
+- Verify delivered confirmation and password-reset messages in real inboxes. The initial Proton deferral resolved on retry. Brevo transactional link tracking is enabled by default and the current Free settings expose anonymization, not a tracking-disable toggle; verify auth links end to end. Stay on the Free plan and do not enable paid upgrades.
 - Install backend secrets and register the webhook destination.
 - Test account creation, confirmation email, sign-in, password recovery, checkout, app access, cancellation, expiry, failed payment, and signature rejection in a separate Stripe sandbox. Do not use test cards against the live account.
 - Keep checkout unpublished until these checks pass. The public calculator source is not DRM; authorization protects the hosted service, not copies of open-source code.
