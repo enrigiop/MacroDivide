@@ -24,4 +24,6 @@ Gmail's original-message view reported SPF PASS, DKIM PASS for auth.macrodivide.
 
 After template and consent-setting changes, a password-reset message to the existing owner test account arrived naturally in Gmail Inbox. No Gmail filter or Not spam action was used. This is one mailbox observation, not a guarantee of inbox placement for all recipients.
 
-One further fresh signup-confirmation test requires explicit user approval because automatic review rejected creating another persistent test user. The original test user had already confirmed its address, so the signup-resend endpoint did not produce another confirmation for that account.
+After explicit owner approval, a fresh disposable signup was created. The updated confirmation arrived naturally in Gmail Inbox. Opening its confirmation link returned to macrodivide.com/app.html with a confirmed session and the account-ready subscription selection. No trial, subscription or payment was initiated. The test session was signed out afterwards.
+
+Both confirmation and recovery messages have now been observed in Inbox in the owner Gmail mailbox. This does not guarantee placement for every customer or mailbox provider.
