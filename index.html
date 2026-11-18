@@ -180,7 +180,7 @@ footer{padding:30px 0;font-size:14px;color:var(--mu);text-align:center}
 
 <script>
 // Point every call to action at the app. Replace with your Stripe Payment Link or sign-up URL when billing is live.
-const APP_URL="app.html";
+const APP_URL="app.html?mode=signup";
 document.querySelectorAll('[data-cta]').forEach(a=>{a.href=APP_URL;a.target="_blank";a.rel="noopener"});
 document.querySelector('.top .btn').addEventListener('click',e=>{e.preventDefault();document.getElementById('pricing').scrollIntoView({behavior:'smooth'})});
 </script>
