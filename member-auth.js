@@ -15,8 +15,8 @@ async function load(){
  }catch(e){message(e.message)}finally{loading=false}
 }
 $('form').onsubmit=async e=>{e.preventDefault();$('signin').disabled=true;try{const {error}=await sb.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});if(error)throw error;await load()}catch(e){message(e.message)}finally{ready()}};
-$('signup').onclick=async()=>{if(!$('form').reportValidity())return;$('signup').disabled=true;try{const {error}=await sb.auth.signUp({email:$('email').value.trim(),password:$('password').value,options:{emailRedirectTo:location.origin+'/MacroDivide/app.html'}});if(error)throw error;message('Check your email to confirm your account, then sign in.')}catch(e){message(e.message)}finally{ready()}};
-$('reset').onclick=async()=>{if(!$('email').reportValidity())return;const {error}=await sb.auth.resetPasswordForEmail($('email').value.trim(),{redirectTo:location.origin+'/MacroDivide/app.html'});message(error?error.message:'If the account exists, a password-reset email is on its way.')};
+$('signup').onclick=async()=>{if(!$('form').reportValidity())return;$('signup').disabled=true;try{const {error}=await sb.auth.signUp({email:$('email').value.trim(),password:$('password').value,options:{emailRedirectTo:location.origin+'/app.html'}});if(error)throw error;message('Check your email to confirm your account, then sign in.')}catch(e){message(e.message)}finally{ready()}};
+$('reset').onclick=async()=>{if(!$('email').reportValidity())return;const {error}=await sb.auth.resetPasswordForEmail($('email').value.trim(),{redirectTo:location.origin+'/app.html'});message(error?error.message:'If the account exists, a password-reset email is on its way.')};
 $('start').onclick=async()=>{try{$('start').disabled=true;const d=await api('checkout');location.assign(d.url)}catch(e){message(e.message);$('start').disabled=false}};
 $('manage').onclick=async()=>{try{const d=await api('portal');location.assign(d.url)}catch(e){message(e.message)}};
 $('refresh').onclick=()=>load();$('logout').onclick=async()=>{await sb.auth.signOut();location.reload()};
