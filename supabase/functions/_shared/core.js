@@ -1,10 +1,13 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.95.0';
 import Stripe from 'npm:stripe@23.0.0';
-export const SITE = 'https://enrigiop.github.io/MacroDivide';
+export const SITE = 'https://macrodivide.com';
 export const PRICE = 'price_1Ucah3RYIvKi4dXuwLuEQWkD';
 export const PORTAL = 'bpc_1UcahoRYIvKi4dXu43ZJz5rl';
-export const CORS = {'Access-Control-Allow-Origin':'https://enrigiop.github.io','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Vary':'Origin','Cache-Control':'no-store'};
-export function json(data,status=200){return new Response(JSON.stringify(data),{status,headers:{...CORS,'Content-Type':'application/json'}})}
+export const CORS = {'Access-Control-Allow-Origin':'https://macrodivide.com','Access-Control-Allow-Headers':'authorization, apikey, content-type, x-client-info','Access-Control-Allow-Methods':'GET, POST, OPTIONS','Vary':'Origin','Cache-Control':'no-store'};
+export const ALLOWED_ORIGINS = ['https://macrodivide.com','https://www.macrodivide.com','https://enrigiop.github.io'];
+export function allowedOrigin(req){return !req.headers.get('Origin')||ALLOWED_ORIGINS.includes(req.headers.get('Origin'))}
+export function corsFor(req){const origin=req.headers.get('Origin');return {...CORS,'Access-Control-Allow-Origin':ALLOWED_ORIGINS.includes(origin)?origin:'https://macrodivide.com'}}
+export function json(data,status=200,req){return new Response(JSON.stringify(data),{status,headers:{...(req?corsFor(req):CORS),'Content-Type':'application/json'}})}
 export function clients(){
  const url=Deno.env.get('SUPABASE_URL');
  const keys=JSON.parse(Deno.env.get('SUPABASE_SECRET_KEYS')||'{}');
